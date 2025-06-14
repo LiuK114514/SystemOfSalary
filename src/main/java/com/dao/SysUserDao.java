@@ -2,10 +2,9 @@ package com.dao;
 
 import com.model.SysUser;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SysUserDao extends BaseDao{
     public SysUser getUserByUsername(String username) {
@@ -79,6 +78,51 @@ public class SysUserDao extends BaseDao{
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public List<SysUser> getAllUsers() {
+        String sql = "SELECT * FROM sys_user";
+        List<SysUser> users = new ArrayList<>();
+        try (Connection cn = dataSource.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while(rs.next()) {
+                    SysUser user = new SysUser();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRealName(rs.getString("real_name"));
+                    user.setIdNumber(rs.getString("id_number"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setAddress(rs.getString("address"));
+                    user.setRoleId(rs.getInt("role_id"));
+                    user.setIsLocked(rs.getBoolean("is_locked"));
+                    user.setLastPasswordChange(rs.getTimestamp("last_password_change"));
+                    user.setCreatedAt(rs.getTimestamp("created_at"));
+                    user.setFailedLoginCount(rs.getInt("failed_login_count"));
+                    user.setLastFailedLoginTime(rs.getTimestamp("last_failed_login_time"));
+                    user.setAccountLockedUntil(rs.getTimestamp("account_locked_until"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
+    }
+
+    public boolean updateUserRole(int userId, int role_id) {
+        String sql = "UPDATE sys_user SET role_id = ? WHERE id = ?";
+        try(Connection conn = getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, role_id);
+            ps.setInt(2, userId);
+            return ps.executeUpdate()>0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

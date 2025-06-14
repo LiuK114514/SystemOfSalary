@@ -29,8 +29,7 @@
 <div class="menu">
     <!-- 系统管理员权限 -->
     <c:if test="${role == 'admin'}">
-    <button onclick="location.href='userManage.jsp'">用户管理</button>
-    <button onclick="location.href='roleManage.jsp'">角色权限配置</button>
+    <button onclick="location.href='UserServlet'">用户管理</button>
     </c:if>
 
     <!-- 人事管理员权限 -->
