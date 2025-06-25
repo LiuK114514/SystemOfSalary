@@ -16,8 +16,8 @@ public class FamilyMember {
     private String idNumber;          // 身份证号
     private Date birthDate;           // 出生日期
     private Boolean isStudent;        // 是否学生
-   // private Boolean hasMortgage;      // 是否有房贷
-   //private Boolean isRenting;        // 是否租房
+/*   private Boolean hasMortgage;      // 是否有房贷
+   private Boolean isRenting;        // 是否租房*/
     private Boolean isMajorDisease;   // 是否患重大疾病
     private Timestamp createdAt;      // 创建时间
 }

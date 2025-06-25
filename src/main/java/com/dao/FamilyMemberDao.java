@@ -30,7 +30,6 @@ public class FamilyMemberDao extends BaseDao{
                 member.setIsStudent(rs.getBoolean("is_student"));
                 member.setIsMajorDisease(rs.getBoolean("is_major_disease"));
                 member.setCreatedAt(rs.getTimestamp("created_at"));
-                member.setUpdatedAt(rs.getTimestamp("updated_at"));
                 familyMembers.add(member);
             }
         } catch (Exception e) {
