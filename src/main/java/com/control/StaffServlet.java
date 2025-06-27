@@ -18,12 +18,34 @@ public class StaffServlet extends HttpServlet {
     private StaffDao staffDao = new StaffDao();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("search".equals(action)) {
+            // 获取搜索参数
+            String keyword = request.getParameter("keyword");
+            String departmentId = request.getParameter("department");
+
+            // 调用DAO进行搜索
+            List<Staff> staffList = staffDao.searchStaff(keyword);
+            request.setAttribute("staffList", staffList);
+
+            RequestDispatcher rd = request.getRequestDispatcher("/staffManage.jsp");
+            rd.forward(request, response);
+        } else if ("list".equals(action)) {
+            AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
+            List<Staff> staffList = staffDao.getAllStaff();
+            request.setAttribute("staffList", staffList);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
+            rd.forward(request, response);
+        } else {
+            AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
+            List<Staff> staffList = staffDao.getAllStaff();
+            request.setAttribute("staffList", staffList);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
+            rd.forward(request, response);
+        }
+
         // 显示所有员工
-        AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
-        List<Staff> staffList = staffDao.getAllStaff();
-        request.setAttribute("staffList", staffList);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
-        rd.forward(request, response);
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

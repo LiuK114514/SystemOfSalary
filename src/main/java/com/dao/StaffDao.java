@@ -141,6 +141,48 @@ public class StaffDao extends BaseDao{
         }
         return staff;
     }
+    public List<Staff> searchStaff(String keyword) {
+        List<Staff> staffList = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM staff WHERE 1=1");
 
+        // 添加关键字条件
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND (name LIKE ? OR staff_code LIKE ?)");
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String likeKeyword = "%" + keyword + "%";
+                pstmt.setString(paramIndex++, likeKeyword);
+                pstmt.setString(paramIndex++, likeKeyword);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Staff staff = new Staff();
+                    staff.setId(rs.getInt("id"));
+                    staff.setName(rs.getString("name"));
+                    staff.setStaffCode(rs.getString("staff_code"));
+                    staff.setDepartmentId(Integer.valueOf(rs.getString("department_id")));
+                    staff.setPosition(rs.getString("position"));
+                    staff.setTitle(rs.getString("title"));
+                    String encrypted_idNumber=rs.getString("id_number");
+                    staff.setIdNumber(SensitiveDataEncryptFilter.decryptSM4(encrypted_idNumber));
+                    String encrypted_phone=rs.getString("phone");
+                    staff.setPhone(SensitiveDataEncryptFilter.decryptSM4(encrypted_phone));
+                    String encrypted_address= rs.getString("address");
+                    staff.setAddress(SensitiveDataEncryptFilter.decryptSM4(encrypted_address));
+                    staff.setCreatedAt(rs.getTimestamp("created_at"));
+                    staffList.add(staff);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staffList;
+    }
 
 }
