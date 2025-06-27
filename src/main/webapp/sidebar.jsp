@@ -12,7 +12,7 @@
     </c:if>
 
     <c:if test="${role == 'admin' or role eq 'hr'}">
-      <button class="sidebar-button" onclick="location.href='StaffServlet'">人员管理</button>
+      <button class="sidebar-button" onclick="location.href='StaffServlet?action=list'">人员管理</button>
     </c:if>
 
     <c:if test="${role == 'admin' or role == 'finance'}">

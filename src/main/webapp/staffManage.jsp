@@ -20,6 +20,17 @@
 <div class="main">
     <div class="container">
         <h1>员工管理</h1>
+        <div class="search-container">
+            <form action="StaffServlet?action=search" method="get" class="search-form">
+                <input type="hidden" name="action" value="search">
+                <div class="search-group">
+                    <input type="text" name="keyword" placeholder="输入姓名或工号"
+                           value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : "" %>">
+                    <button type="submit" class="btn btn-search">搜索</button>
+                    <a href="StaffServlet?action=list" class="btn btn-reset">重置</a>
+                </div>
+            </form>
+        </div>
         <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新员工</button>
         <table>
             <thead>
@@ -283,5 +294,50 @@
     }
     .sidebar-button:nth-child(2){
         background-color: #1ABC9C;
+    }
+
+    .search-container {
+        margin: 20px 0;
+    }
+
+    .search-form {
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .search-group input[type="text"] {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+
+    .search-group select {
+        width: 150px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+
+    .btn-search {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 15px;
+    }
+
+    .btn-reset {
+        background-color: #f44336;
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        display: inline-block;
+        line-height: normal;
     }
 </style>
