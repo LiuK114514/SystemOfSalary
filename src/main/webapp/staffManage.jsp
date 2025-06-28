@@ -1,13 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, com.model.Staff, com.model.SysUser" %>
-<%--<%--%>
-<%--    // 权限检查 - 只有HR可以访问此页面--%>
-<%--    SysUser currentUser = (SysUser) session.getAttribute("currentUser");--%>
-<%--    if (currentUser == null || !currentUser.getRole().equals("HR")) {--%>
-<%--        response.sendRedirect("access_denied.jsp");--%>
-<%--        return;--%>
-<%--    }--%>
-<%--%>--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,7 +25,9 @@
                 </div>
             </form>
         </div>
+<       <c:if test="${role == 'admin' or role == 'hr'}">
         <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加新员工</button>
+        </c:if>
         <table>
             <thead>
             <tr>
@@ -42,7 +38,9 @@
                 <th>身份证号</th>
                 <th>手机号</th>
                 <th>住址</th>
+
                 <th>操作</th>
+
             </tr>
             </thead>
             <tbody>
@@ -61,12 +59,14 @@
                 <td><%= staff.getPhone() != null ? staff.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2") : "" %></td>
                 <td><%= staff.getAddress() %></td>
                 <td class="action-buttons">
+                    <c:if test="${role == 'admin' or role == 'hr'}">
                     <button class="btn btn-edit" onclick="document.getElementById('editModal').style.display='block'; loadStaffData('<%= staff.getStaffCode() %>')">编辑</button>
                     <form action="StaffServlet" method="post" style="display:inline;">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="staffId" value="<%= staff.getStaffCode() %>">
                         <button type="submit" class="btn btn-delete" onclick="return confirm('确定要删除员工 <%= staff.getName() %> 吗？')">删除</button>
                     </form>
+                    </c:if>
                     <a href="FamilyMemberServlet?action=list&staffCode=<%= staff.getStaffCode() %>" class="btn btn-family">管理家庭</a>
                 </td>
             </tr>
@@ -80,6 +80,14 @@
             <% } %>
             </tbody>
         </table>
+        <div class="pagination" >
+            <c:forEach begin="1" end="${totalPages}" var="i">
+                <a href="?page=${i}&keyword=${param.keyword}"
+                   class="${i == currentPage ? 'current-page' : ''}">
+                        ${i}
+                </a>
+            </c:forEach>
+        </div>
     </div>
 
     <!-- 添加员工模态框 -->
@@ -292,7 +300,7 @@
         text-align: right;
         margin-top: 20px;
     }
-    .sidebar-button:nth-child(2){
+    .staff{
         background-color: #1ABC9C;
     }
 
@@ -339,5 +347,35 @@
         text-decoration: none;
         display: inline-block;
         line-height: normal;
+    }
+    .pagination{
+        text-align: center;
+        margin-top: 20px;
+    }
+    .pagination a {
+        display: inline-block;
+        padding: 6px 12px;
+        margin: 0 4px;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #333;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #f1f1f1;
+        border-color: #1ABC9C;
+        color: #1ABC9C;
+    }
+
+    .pagination a.current-page {
+        background-color: #1ABC9C;
+        color: white;
+        border-color: #1ABC9C;
+        font-weight: bold;
+        cursor: default;
+        pointer-events: none;
     }
 </style>

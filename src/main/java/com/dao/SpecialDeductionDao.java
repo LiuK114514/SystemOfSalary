@@ -11,22 +11,22 @@ public class SpecialDeductionDao extends BaseDao{
 
 
     public SpecialDeduction getByStaffCode(String staffCode) {
-    String sql = "SELECT * FROM special_deduction WHERE staff_code = ?";
+    String sql = "SELECT * FROM liuk_special_deduction WHERE lk_staff_code = ?";
         try (Connection cn = dataSource.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, staffCode);
             var rs = ps.executeQuery();
             if (rs.next()) {
                 SpecialDeduction deduction = new SpecialDeduction();
-                deduction.setId(rs.getInt("id"));
-                deduction.setStaffCode(rs.getInt("staff_code"));
-                deduction.setChildEducation(rs.getBigDecimal("child_education"));
-                deduction.setContinueEducation(rs.getBigDecimal("continue_education"));
-                deduction.setHousingLoanInterest(rs.getBigDecimal("housing_loan_interest"));
-                deduction.setHousingRent(rs.getBigDecimal("housing_rent"));
-                deduction.setElderlySupport(rs.getBigDecimal("elderly_support"));
-                deduction.setSeriousIllness(rs.getBigDecimal("serious_illness"));
-                deduction.setCreatedAt(rs.getTimestamp("created_at"));
+                deduction.setId(rs.getInt("lk_id"));
+                deduction.setStaffCode(rs.getInt("lk_staff_code"));
+                deduction.setChildEducation(rs.getBigDecimal("lk_child_education"));
+                deduction.setContinueEducation(rs.getBigDecimal("lk_continue_education"));
+                deduction.setHousingLoanInterest(rs.getBigDecimal("lk_housing_loan_interest"));
+                deduction.setHousingRent(rs.getBigDecimal("lk_housing_rent"));
+                deduction.setElderlySupport(rs.getBigDecimal("lk_elderly_support"));
+                deduction.setSeriousIllness(rs.getBigDecimal("lk_serious_illness"));
+                deduction.setCreatedAt(rs.getTimestamp("lk_created_at"));
                 return deduction;
             }
         } catch (SQLException e) {
@@ -36,7 +36,7 @@ public class SpecialDeductionDao extends BaseDao{
     }
 
     public boolean update(SpecialDeduction deduction) {
-        String sql = "UPDATE special_deduction SET child_education = ?, continue_education = ?, housing_loan_interest = ?, housing_rent = ?, elderly_support = ?, serious_illness = ?,created_at=? WHERE staff_code = ?";
+        String sql = "UPDATE liuk_special_deduction SET lk_child_education = ?, lk_continue_education = ?, lk_housing_loan_interest = ?, lk_housing_rent = ?, lk_elderly_support = ?, lk_serious_illness = ?,lk_created_at=? WHERE lk_staff_code = ?";
         try (Connection cn = dataSource.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setBigDecimal(1, deduction.getChildEducation());
@@ -56,7 +56,7 @@ public class SpecialDeductionDao extends BaseDao{
     }
 
     public boolean add(SpecialDeduction deduction) {
-        String sql = "INSERT INTO special_deduction (staff_code, child_education, continue_education, housing_loan_interest, housing_rent, elderly_support, serious_illness, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO liuk_special_deduction (lk_staff_code, lk_child_education, lk_continue_education, lk_housing_loan_interest, lk_housing_rent, lk_elderly_support, lk_serious_illness, lk_created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         try (Connection cn = dataSource.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, deduction.getStaffCode());

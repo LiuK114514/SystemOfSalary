@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class SalaryView {
     private Integer staffCode;
     private String staffName;
     private String department;
-    private Date salaryMonth;
+    private String salaryMonth;
     private BigDecimal baseSalary;
     private BigDecimal positionAllowance;
     private BigDecimal lunchAllowance;
@@ -26,6 +27,11 @@ public class SalaryView {
     private BigDecimal personalIncomeTax;
     private BigDecimal leaveDeduction;
     private BigDecimal actualSalary;
+    private String status;                   // 工资状态（draft、finance_approved、manager_approved、paid、rejected）
+    private Timestamp financeApproveTime;   // 财务初审时间
+    private Timestamp managerApproveTime;   // 总经理复审时间
+    private String rejectReason;             // 驳回原因
+    private Timestamp paidTime;              // 发放时间
 
 
 }

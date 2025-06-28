@@ -1,4 +1,6 @@
 package com.model;
+
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -8,9 +10,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Department {
-   private Integer id;
-    private String name;
-    private String description;
-    private Timestamp createdAt;
+public class PagedLogResult {
+    private List<AuditLog> logs;
+    private int totalPages;
 }

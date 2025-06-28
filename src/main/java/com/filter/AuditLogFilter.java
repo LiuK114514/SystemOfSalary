@@ -63,7 +63,7 @@ public class AuditLogFilter implements Filter {
                 role = "未授权用户";
             } else if (Role == UserRole.admin) {
                 role = "系统管理员";
-            } else if (Role == UserRole.unauthorized) {
+            } else if (Role == UserRole.staff) {
                 role = "未授权用户";
             } else if (Role == UserRole.finance) {
                 role = "工资管理员";

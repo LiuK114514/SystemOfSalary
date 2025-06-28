@@ -13,23 +13,23 @@ import java.util.List;
 public class FamilyMemberDao extends BaseDao{
     public List<FamilyMember> getFamilyMembersByStaffCode(String staffCode) {
         List<FamilyMember> familyMembers = new ArrayList<>();
-        String sql = "SELECT * FROM family_member WHERE staff_code = ?";
+        String sql = "SELECT * FROM liuk_family_member WHERE lk_staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staffCode);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 FamilyMember member = new FamilyMember();
-                member.setId(rs.getInt("id"));
-                member.setStaffCode(rs.getInt("staff_code"));
-                member.setName(rs.getString("name"));
-                member.setRelation(rs.getString("relation"));
-               String encrypted_idNumber= rs.getString("id_number");
+                member.setId(rs.getInt("lk_id"));
+                member.setStaffCode(rs.getInt("lk_staff_code"));
+                member.setName(rs.getString("lk_name"));
+                member.setRelation(rs.getString("lk_relation"));
+               String encrypted_idNumber= rs.getString("lk_id_number");
                 member.setIdNumber(SensitiveDataEncryptFilter.decryptSM4(encrypted_idNumber));
-                member.setBirthDate(rs.getDate("birth_date"));
-                member.setIsStudent(rs.getBoolean("is_student"));
-                member.setIsMajorDisease(rs.getBoolean("is_major_disease"));
-                member.setCreatedAt(rs.getTimestamp("created_at"));
+                member.setBirthDate(rs.getDate("lk_birth_date"));
+                member.setIsStudent(rs.getBoolean("lk_is_student"));
+                member.setIsMajorDisease(rs.getBoolean("lk_is_major_disease"));
+                member.setCreatedAt(rs.getTimestamp("lk_created_at"));
                 familyMembers.add(member);
             }
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class FamilyMemberDao extends BaseDao{
     }
 
     public void addFamilyMember(FamilyMember member) {
-        String sql = "INSERT INTO family_member (staff_code, name, relation, id_number, birth_date, is_student, is_major_disease, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NULL)";
+        String sql = "INSERT INTO liuk_family_member (lk_staff_code, lk_name, lk_relation, lk_id_number, lk_birth_date, lk_is_student, lk_is_major_disease, lk_created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, member.getStaffCode());
@@ -55,7 +55,7 @@ public class FamilyMemberDao extends BaseDao{
     }
 
     public void deleteFamilyMember(String memberId) {
-        String sql = "DELETE FROM family_member WHERE id = ?";
+        String sql = "DELETE FROM liuk_family_member WHERE lk_id = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, memberId);
@@ -67,21 +67,21 @@ public class FamilyMemberDao extends BaseDao{
 
     public List<FamilyMember> getByStaffCode(String staffCode) {
     List<FamilyMember> familyMembers = new ArrayList<>();
-        String sql = "SELECT * FROM family_member WHERE staff_code = ?";
+        String sql = "SELECT * FROM liuk_family_member WHERE lk_staff_code = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, staffCode);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 FamilyMember member = new FamilyMember();
-                member.setId(rs.getInt("id"));
-                member.setStaffCode(rs.getInt("staff_code"));
-                member.setName(rs.getString("name"));
-                member.setRelation(rs.getString("relation"));
-                member.setIdNumber(rs.getString("id_number"));
-                member.setBirthDate(rs.getDate("birth_date"));
-                member.setIsStudent(rs.getBoolean("is_student"));
-                member.setIsMajorDisease(rs.getBoolean("is_major_disease"));
+                member.setId(rs.getInt("lk_id"));
+                member.setStaffCode(rs.getInt("lk_staff_code"));
+                member.setName(rs.getString("lk_name"));
+                member.setRelation(rs.getString("lk_relation"));
+                member.setIdNumber(rs.getString("lk_id_number"));
+                member.setBirthDate(rs.getDate("lk_birth_date"));
+                member.setIsStudent(rs.getBoolean("lk_is_student"));
+                member.setIsMajorDisease(rs.getBoolean("lk_is_major_disease"));
                 familyMembers.add(member);
             }
         } catch (Exception e) {

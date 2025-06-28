@@ -1,16 +1,15 @@
 <%--
   Created by IntelliJ IDEA.
   User: lenovo
-  Date: 2025/6/7
-  Time: 19:34
+  Date: 2025/6/28
+  Time: 10:25
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>工资管理</title>
+    <title>员工工资条</title>
     <link rel="stylesheet" type="text/css" href="sidebar.css">
     <style>
 
@@ -50,11 +49,11 @@
             transition: background-color 0.3s ease;
             margin: 10px;
         }
-   /*     !* 发放按钮 *!
-        .salary-button:nth-child(1) {
-            background-color: #9C27B0;
-        }
-*/
+        /*     !* 发放按钮 *!
+             .salary-button:nth-child(1) {
+                 background-color: #9C27B0;
+             }
+     */
         /* 工资录入 */
         .salary-button:nth-child(2) {
             background-color: #2196F3;
@@ -337,32 +336,17 @@
     <div class="salary-container">
         <div class="salary-left-panel">
             <h1 class="salary-h1">工资查询</h1>
-            <c:if test="${role == 'admin' or role == 'finance'}">
-                <button class="salary-button" onclick="document.getElementById('salaryModal').style.display='block'">工资录入</button>
-            </c:if>
-            <form action="SalaryQueryServlet" method="post" class="salary-form">
+            <form action="StaffSalaryServlet" method="post" class="salary-form">
                 姓名：<input type="text" name="staffName" />
                 部门：<input type="text" name="departmentName" />
                 时间：<input type="date" name="start"> ~ <input type="date" name="end">
                 <input type="submit" value="查询" />
             </form>
 
-            <form action="BatchApproveServlet" method="post" id="batchApproveForm">
-                <input type="hidden" name="action" id="batchAction" value="" />
-                <input type="hidden" name="role" value="${role}" />
-                <button class="salary-button" type="button" onclick="submitBatch('approve')">审批通过</button>
-                <c:if test="${role == 'finance' or role == 'admin'}">
-                    <button class="salary-button" type="button"  onclick="if(canPaySelectedSalaries()) submitBatch('paid')">发放</button>
-                </c:if>
-
-                <c:if test="${role == 'ceo'}">
-                    <button class="salary-button reject-button" type="button" onclick="prepareReject()">驳回</button>
-                </c:if>
-
                 <table class="salary-table">
                     <tr>
                     <tr>
-                        <th>选择</th>
+
                         <th>工号</th>
                         <th>姓名</th>
                         <th>部门</th>
@@ -377,15 +361,10 @@
                         <th>个税</th>
                         <th>请假扣款</th>
                         <th>实发工资</th>
-                        <th>审批状态</th>
-                        <c:if test="${role == 'admin' or role == 'finance'}">
-                        <th>操作</th>
-                        </c:if>>
-                        <th>备注</th>
                     </tr>
+
                     <c:forEach var="s" items="${requestScope.salaryViews}" varStatus="status">
                         <tr>
-                            <td><input type="checkbox" name="salaryId" value="${s.id}"/></td>
                             <td>${s.staffCode}</td>
                             <td>${s.staffName}</td>
                             <td>${s.department}</td>
@@ -400,42 +379,9 @@
                             <td>${s.personalIncomeTax}</td>
                             <td>${s.leaveDeduction}</td>
                             <td>${s.actualSalary}</td>
-
-                            <!-- 审批状态 -->
-                            <td class="${s.status}">
-                                <c:choose>
-                                    <c:when test="${s.status == 'draft'}">
-                                        <span class="status" id="status-draft" data-status="draft">待审批</span>
-                                    </c:when>
-                                    <c:when test="${s.status == 'finance_approved'}">
-                                        <span class="status" id="status-finance" data-status="finance_approved">财务已审</span>
-                                    </c:when>
-                                    <c:when test="${s.status == 'ceo_approved'}">
-                                        <span class="status" id="status-ceo" data-status="ceo_approved">总经理已审</span>
-                                    </c:when>
-                                    <c:when test="${s.status == 'paid'}">
-                                        <span class="status" id="status-paid" data-status="paid">已发放</span>
-                                    </c:when>
-                                    <c:when test="${s.status == 'rejected'}">
-                                        <span class="status" id="status-rejected" data-status="rejected">已驳回</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="status" data-status="unknown">未知状态</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-
-                            <c:if test="${role == 'admin' or role == 'finance'}">
-                                <td>
-                                    <button class="action-button edit-button" onclick="submitEdit(${s.id})">修改</button>
-                                </td>
-                            </c:if>
-
-                            <td>${s.rejectReason}</td>
                         </tr>
                     </c:forEach>
                 </table>
-
                 <div class="pagination" >
                     <c:forEach begin="1" end="${totalPages}" var="i">
                         <a href="?page=${i}&staffName=${param.staffName}&department=${param.department}&start=${param.start}&end=${param.end}"
@@ -446,128 +392,7 @@
                 </div>
             </form>
         </div>
-
-        <c:if test="${role == 'admin' or role == 'finance'}">
-            <!-- 工资录入弹窗 -->
-            <div id="salaryModal" class="salary-modal">
-                <div class="salary-modal-content">
-                    <span class="salary-modal-close" onclick="document.getElementById('salaryModal').style.display='none'">&times;</span>
-                    <h3>工资录入</h3>
-                    <form action="AddSalaryServlet" method="post">
-                        <fieldset class="salary-fieldset">
-                            <legend class="salary-legend" ><strong>员工基本信息</strong></legend>
-                            工号：<br><input class="salary-input" type="text" name="staffCode" required /><br>
-                            姓名：<br><input class="salary-input" type="text" name="staffName" required /><br>
-                            部门：<br><input class="salary-input" type="text" name="departmentName" required /><br>
-                            月份：<br><input class="salary-input" type="text" name="salaryMonth" placeholder="yyyy-mm" required />
-                        </fieldset>
-                        <fieldset>
-                            <legend class="salary-legend"><strong>工资明细</strong></legend>
-                            基本工资：<br><inpu class="salary-input" type="number" name="baseSalary" step="0.01" required /><br>
-                            岗位津贴：<br><input class="salary-input" type="number" name="positionAllowance" step="0.01" /><br>
-                            午餐补贴：<br><input class="salary-input" type="number" name="lunchAllowance" step="0.01" /><br>
-                            加班工资：<br><input class="salary-input" type="number" name="overtimePay" step="0.01" /><br>
-                            全勤奖金：<br><input class="salary-input" type="number" name="fullAttendanceBonus" step="0.01" />
-                        </fieldset>
-                        <fieldset>
-                            <legend class="salary-legend"><strong>扣除项目</strong></legend>
-                            社保：<br><input class="salary-input" type="number" name="socialInsurance" step="0.01" /><br>
-                            公积金：<br><input class="salary-input" type="number" name="housingFund" step="0.01" /><br>
-                            请假扣款：<br><input class="salary-input" type="number" name="leaveDeduction" step="0.01" />
-                        </fieldset>
-                        <input class="salary-input" type="submit" value="新增" />
-                    </form>
-                </div>
-            </div>
-        </c:if>
-        <div id="rejectModal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close" onclick="closeRejectModal()">&times;</span>
-                <h3>请输入驳回原因</h3>
-                <form id="rejectForm" onsubmit="submitReject(event)">
-                    <input type="hidden" name="action" value="reject">
-                    <div id="selectedSalaryIds"></div>
-                    <textarea name="rejectReason" id="rejectReason" required placeholder="请输入驳回原因"></textarea>
-                    <br/>
-                    <button type="submit">提交驳回</button>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
-<script>
-    function submitBatch(action) {
-        const checkboxes = document.querySelectorAll("input[name='salaryId']:checked");
-        if (checkboxes.length === 0) {
-            alert("请至少选择一条工资记录！");
-            return;
-        }
-        if (action === 'approve') {
-            if (!confirm("确定审批选中的工资吗？")) return;
-        } else if (action === 'paid') {
-
-            if (!confirm("确定发放选中的工资吗？")) return;
-        }
-        document.getElementById('batchAction').value = action;
-        document.getElementById('batchApproveForm').submit();
-    }
-    function prepareReject() {
-        const checkboxes = document.querySelectorAll("input[name='salaryId']:checked");
-        if (checkboxes.length === 0) {
-            alert("请至少选择一条工资记录！");
-            return;
-        }
-        // 清空并重新填充选中的工资ID
-        const selectedIdsContainer = document.getElementById('selectedSalaryIds');
-        selectedIdsContainer.innerHTML = '';
-        checkboxes.forEach(checkbox => {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'salaryId';
-            hiddenInput.value = checkbox.value;
-            selectedIdsContainer.appendChild(hiddenInput);
-        });
-        document.getElementById('rejectReason').value = '';
-        document.getElementById('rejectModal').style.display = 'block';
-    }
-
-    function closeRejectModal() {
-        document.getElementById('rejectModal').style.display = 'none';
-    }
-    function submitReject(event) {
-        event.preventDefault();
-        document.getElementById('batchAction').value = "reject";
-        const reason = document.getElementById('rejectReason').value.trim();
-        if (!reason) {
-            alert("驳回原因不能为空！");
-            return;
-        }
-        if (!confirm("确定驳回该工资记录吗？")) return;
-
-        const form = document.getElementById('rejectForm');
-        form.action = "BatchApproveServlet";
-        form.method = "POST";
-        form.submit();
-    }
-
-    function canPaySelectedSalaries() {
-        const checkedBoxes = document.querySelectorAll("input[name='salaryId']:checked");
-        for (const cb of checkedBoxes) {
-            const tr = cb.closest("tr");
-            const statusElem = tr.querySelector(".status");
-            const status = statusElem?.getAttribute("data-status");
-
-            if (status !== "ceo_approved" && status !== "paid") {
-                alert("选中的工资记录中有未通过总经理审批的，不能发放！");
-                return false;
-            }
-        }
-        return true;
-    }
-    function submitEdit(salaryId) {
-        event.preventDefault();
-        window.location.href = "SalaryEditServlet?id=" + salaryId;
-    }
-</script>
 </body>
 </html>

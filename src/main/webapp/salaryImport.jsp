@@ -50,7 +50,7 @@
         .page-button:hover {
             background-color: #1976d2;
         }
-        .sidebar-button:nth-child(4){
+        .salary-import{
             background-color: #1ABC9C;
         }
     </style>

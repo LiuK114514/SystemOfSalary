@@ -233,7 +233,7 @@
         text-align: right;
         margin-top: 20px;
     }
-    .sidebar-button:nth-child(1){
+    .user{
         background-color: #1ABC9C;
     }
 </style>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, com.model.FamilyMember, com.model.Staff, com.model.SysUser" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 
     Staff staff = (Staff) request.getAttribute("staff");
@@ -24,10 +25,10 @@
             <p><strong>员工编号：</strong><%= staff.getStaffCode() %></p>
     <%--        <p><strong>部门：</strong><%= staff.getDepartment() %></p>--%>
         </div>
-
+        <c:if test="${role == 'admin' or role == 'hr'}">
         <button class="btn btn-add" onclick="document.getElementById('addModal').style.display='block'">添加家庭成员</button>
         <button class="btn btn-add" onclick="window.location.href='SpecialDedutionImportServlet?staffCode=<%= staff.getStaffCode() %>'">更新个人专项附加扣除</button>
-
+        </c:if>>
         <table border="1" cellspacing="0" cellpadding="8">
             <thead>
             <tr>
@@ -240,7 +241,7 @@
         text-align: right;
         margin-top: 20px;
     }
-    .sidebar-button:nth-child(2){
+    .staff{
         background-color: #1ABC9C;
     }
 </style>

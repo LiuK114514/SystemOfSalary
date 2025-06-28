@@ -30,4 +30,24 @@ public class SysUser {
     public void setRole(UserRole role) {
         this.roleId = role.getCode();
     }
+    public String getPhone() {
+        if (phone != null && phone.length() == 11) {
+            return phone.substring(0, 3) + "****" + phone.substring(7);
+        }
+        return phone;
+    }
+
+    public String getRealName() {
+        if (realName != null && realName.length() > 1) {
+            return realName.substring(0, 1) + "**";
+        }
+        return realName;
+    }
+
+    public String getAddress() {
+        if (address != null && address.length() > 1) {
+            return address.substring(0, 1) + "***";
+        }
+        return address;
+    }
 }

@@ -1,9 +1,10 @@
 package com.control;
 
 import com.dao.SalaryRecordDao;
-import com.model.SalaryRecord;
-import com.model.SalaryView;
-import com.model.UserRole;
+
+import com.model.*;
+
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
@@ -22,29 +23,36 @@ public class SalaryQueryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        HttpSession session = request.getSession();
-        UserRole role = (UserRole) session.getAttribute("userRole");
-        String username = (String) session.getAttribute("username");
-        request.setAttribute("role", role);
-        request.setAttribute("username", username);
-        SalaryRecordDao salaryDAO = new SalaryRecordDao();
-        List<SalaryView> salary = salaryDAO.findAllWithStaffInfo();
-        request.setAttribute("salary", salary);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/salaryManage.jsp");
-        rd.forward(request, response);
-    }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
         String staffName = request.getParameter("staffName");
         String departmentName = request.getParameter("department");
         String startDate = request.getParameter("start");
         String endDate = request.getParameter("end");
+
+        int page = 1;
+        int pageSize = 10;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
         SalaryRecordDao salaryDAO = new SalaryRecordDao();
-        List<SalaryView> salary = salaryDAO.FuzzyfindWithStaffInfo(staffName, departmentName, startDate, endDate);
-        request.setAttribute("salary", salary);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/salaryManage.jsp");
-        rd.forward(request, response);
+        PagedSalaryResult pagedResult = salaryDAO.findByPageWithProc(
+                page, pageSize, staffName, departmentName, startDate, endDate
+        );
+        request.setAttribute("salaryViews", pagedResult.getSalaryViews());
+        request.setAttribute("totalPages", pagedResult.getTotalPages());
+        request.setAttribute("currentPage", page);
+        request.getRequestDispatcher("/salaryManage.jsp").forward(request, response);
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 }

@@ -37,19 +37,9 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/register.jsp").forward(request, response);
             return;
         }
-        SysUser user = new SysUser();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setRealName(name);
-        user.setIdNumber(idNumber);
-        user.setPhone(phone);
-        user.setAddress(address);
-        user.setRoleId(-1); // 默认身份为未授权用户
-        user.setIsLocked(false); // 默认不锁定
-        user.setLastPasswordChange(new Timestamp(System.currentTimeMillis()));
-        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
         try {
-            if(userDao.addUser(user)){
+            if(userDao.addUser(username,password,name,idNumber,phone,address,-1,false,new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()))){
             request.setAttribute("successMessage", "注册成功，请登录");
             request.getRequestDispatcher("/login.jsp").forward(request, response);}
             else {

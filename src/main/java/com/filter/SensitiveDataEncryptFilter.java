@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebFilter(urlPatterns = {"/RegisterServlet", "/LoginServlet", "/ChangePasswordServlet", "/StaffServlet", "/FamilyMemberServlet"})
+@WebFilter(urlPatterns = {"/RegisterServlet", "/LoginServlet", "/ChangePasswordServlet", "/StaffServlet", "/FamilyMemberServlet","/StaffInfoServlet", "/SalaryRecordServlet", "/SalaryResultServlet"})
 public class SensitiveDataEncryptFilter implements Filter {
     private static final String SM4_KEY = "0123456789abcdef";
     @Override

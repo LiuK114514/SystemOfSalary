@@ -79,7 +79,7 @@
         a:hover {
             background-color: #5a6268;
         }
-        .sidebar-button:nth-child(2){
+        .staff{
             background-color: #1ABC9C;
         }
     </style>

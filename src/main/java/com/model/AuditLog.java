@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditLog {
+    private Integer id;
     private String username;
     private String role;
     private String operationType;

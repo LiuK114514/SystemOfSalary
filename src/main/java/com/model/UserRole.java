@@ -8,7 +8,7 @@ public enum UserRole {
         ceo(3),  // 总经理
         admin(4),        // 系统管理员
         audit(5),         // 审计员
-    unauthorized(-1);   // 无权限
+        staff(-1);   // 普通员工
         private final int code;
 
         UserRole(int code) {

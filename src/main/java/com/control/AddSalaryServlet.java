@@ -45,7 +45,7 @@ public class AddSalaryServlet extends HttpServlet {
         String staffName = request.getParameter("staffName");
         String departmentName = request.getParameter("departmentName");
         String salaryMonthStr = request.getParameter("salaryMonth");
-
+        String salaryMonth = salaryMonthStr.substring(0, 7);
         BigDecimal baseSalary = getBigDecimalParam(request, "baseSalary");
         BigDecimal positionAllowance = getBigDecimalParam(request, "positionAllowance");
         BigDecimal lunchAllowance = getBigDecimalParam(request, "lunchAllowance");
@@ -91,7 +91,7 @@ public class AddSalaryServlet extends HttpServlet {
 
         SalaryRecord salaryRecord = new SalaryRecord();
         salaryRecord.setStaffCode(Integer.parseInt(staffCodeStr));
-        salaryRecord.setSalaryMonth(Date.valueOf(salaryMonthStr));
+        salaryRecord.setSalaryMonth(salaryMonth);
         salaryRecord.setBaseSalary(baseSalary);
         salaryRecord.setPositionAllowance(positionAllowance);
         salaryRecord.setLunchAllowance(lunchAllowance);

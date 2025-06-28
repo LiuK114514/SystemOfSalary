@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dao.StaffDao;
 import com.filter.AuditLogFilter;
+import com.model.PagedStaffResult;
 import com.model.Staff;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -18,33 +19,26 @@ public class StaffServlet extends HttpServlet {
     private StaffDao staffDao = new StaffDao();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if ("search".equals(action)) {
-            // 获取搜索参数
             String keyword = request.getParameter("keyword");
-            String departmentId = request.getParameter("department");
+            String pageParam = request.getParameter("page");
+            int page = 1;
+            int pageSize = 2;
+            if (pageParam != null) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                    if (page < 1) page = 1;
+                } catch (NumberFormatException ignored) {}
+            }
 
-            // 调用DAO进行搜索
-            List<Staff> staffList = staffDao.searchStaff(keyword);
-            request.setAttribute("staffList", staffList);
+            StaffDao staffDao = new StaffDao();
+            PagedStaffResult pagedResult = staffDao.getStaffByPage(page, pageSize, keyword);
 
+            request.setAttribute("staffList", pagedResult.getStaffList());
+            request.setAttribute("totalPages", pagedResult.getTotalPages());
+            request.setAttribute("currentPage", page);
+            AuditLogFilter.log(request, "查询", "员工信息", "成功", keyword != null ? "关键词分页查询" : "分页列出全部");
             RequestDispatcher rd = request.getRequestDispatcher("/staffManage.jsp");
             rd.forward(request, response);
-        } else if ("list".equals(action)) {
-            AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
-            List<Staff> staffList = staffDao.getAllStaff();
-            request.setAttribute("staffList", staffList);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
-            rd.forward(request, response);
-        } else {
-            AuditLogFilter.log(request, "查询", "员工信息", "成功", "通过过滤器记录");
-            List<Staff> staffList = staffDao.getAllStaff();
-            request.setAttribute("staffList", staffList);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/staffManage.jsp");
-            rd.forward(request, response);
-        }
-
-        // 显示所有员工
 
     }
 

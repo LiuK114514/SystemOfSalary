@@ -43,9 +43,40 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-        .sidebar-button:nth-child(5){
+        .audit{
             background-color: #1ABC9C;
         }
+        .pagination{
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 0 4px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: #333;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #f1f1f1;
+            border-color: #1ABC9C;
+            color: #1ABC9C;
+        }
+
+        .pagination a.current-page {
+            background-color: #1ABC9C;
+            color: white;
+            border-color: #1ABC9C;
+            font-weight: bold;
+            cursor: default;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
@@ -87,6 +118,14 @@
             </tr>
         </c:forEach>
     </table>
+    <div class="pagination" >
+        <c:forEach begin="1" end="${totalPages}" var="i">
+            <a href="?page=${i}&username=${param.username}&type=${param.type}&start=${param.start}&end=${param.end}"
+               class="${i == currentPage ? 'current-page' : ''}">
+                    ${i}
+            </a>
+        </c:forEach>
+    </div>
 </div>
 </body>
 </html>

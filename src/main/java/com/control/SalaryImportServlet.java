@@ -68,10 +68,9 @@ public class SalaryImportServlet extends HttpServlet {
             SalaryRecord record = new SalaryRecord();
             Integer staffCode = getInteger(row.getCell(0));
             String monthStr = row.getCell(1).getStringCellValue();
-            Date salaryMonth = Date.valueOf(monthStr + "-01");
 
             record.setStaffCode(staffCode);
-            record.setSalaryMonth(salaryMonth);
+            record.setSalaryMonth(monthStr);
             record.setBaseSalary(getDecimal(row.getCell(2)));
             record.setPositionAllowance(getDecimal(row.getCell(3)));
             record.setLunchAllowance(getDecimal(row.getCell(4)));

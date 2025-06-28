@@ -66,7 +66,7 @@
   input[type="submit"]:hover {
     background-color: #1976d2;
   }
-  .sidebar-button:nth-child(3){
+  .salary-manage{
     background-color: #1ABC9C;
   }
 </style>
@@ -81,7 +81,7 @@
       <input type="hidden" name="staffName" value="${staff.name}" />
       <p><strong>部门：</strong>${department.name}</p>
       <input type="hidden" name="departmentName" value="${department.name}" />
-      <p><strong>月份：</strong> <fmt:formatDate value="${salary.salaryMonth}" pattern="yyyy-MM" /></p>
+      <p><strong>月份：</strong>  ${salary.salaryMonth} </p>
       <input type="hidden" name="salaryMonth" value="${salary.salaryMonth}" />
 
       <label>基本工资：</label>
